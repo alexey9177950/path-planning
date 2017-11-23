@@ -3,7 +3,7 @@
 
 int main() {
     tinyxml2::XMLDocument doc;
-    doc.LoadFile("example.xml");
+    doc.LoadFile("examples/example.xml");
     std::cout << "Hello World!" << std::endl;
     return 0;
 }
