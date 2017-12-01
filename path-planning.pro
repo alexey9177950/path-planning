@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-TARGET = ASearch
+TARGET = PathPlanning
 CONFIG   += console
 CONFIG   -= app_bundle
 TEMPLATE = app
