@@ -18,7 +18,7 @@
 
 class Map
 {
-    public:
+    private:
         int     height, width;
         int     start_i, start_j;
         int     goal_i, goal_j;
