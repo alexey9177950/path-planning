@@ -37,13 +37,13 @@
         </grid>
     </map>
     <algorithm>
-        <searchtype>astar</searchtype>
-        <metrictype>diagonal</metrictype>
+        <searchtype>dijkstra</searchtype> <!--dijkstra, astar, jp_search, theta-->
+        <metrictype>euclidean</metrictype> <!--diagonal, manhattan, euclidean, chebyshev-->
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
         <allowdiagonal>true</allowdiagonal>
-        <cutcorners>false</cutcorners>
-        <allowsqueeze>false</allowsqueeze>
+        <cutcorners>true</cutcorners>
+        <allowsqueeze>true</allowsqueeze>
     </algorithm>
     <options>
         <loglevel>1</loglevel>
