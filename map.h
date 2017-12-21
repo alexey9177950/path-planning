@@ -37,6 +37,10 @@ class Map
         int  getValue(int i, int j) const;
         int getMapHeight() const;
         int getMapWidth() const;
+        int getStartI() const;
+        int getStartJ() const;
+        int getGoalI() const;
+        int getGoalJ() const;
         double getCellSize() const;
 
 };

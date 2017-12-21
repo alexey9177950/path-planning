@@ -16,10 +16,24 @@ struct Node
 {
     int     i, j; //grid cell coordinates
     double  F, g, H; //f-, g- and h-values of the search node
-    Node    *parent; //backpointer to the predecessor node (e.g. the node which g-value was used to set the g-velue of the current node)
+    const Node    *parent; //backpointer to the predecessor node (e.g. the node which g-value was used to set the g-velue of the current node)
 
     bool operator== (const Node &other) const {
         return i == other.i && j == other.j;
     }
+    // for set<Node>
+    bool operator< (const Node &other) const {
+        return i < other.i || (i == other.i && j < other.j);
+    }
 };
+
+// for priority_queue<Node>
+struct NodeComparator {
+private:
+    bool breakingties;
+public:
+    NodeComparator(bool bt = 0) : breakingties(bt) {}
+    bool operator()(const Node& node_1, const Node& node_2) const;
+};
+
 #endif
