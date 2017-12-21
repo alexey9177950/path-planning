@@ -54,7 +54,7 @@
     </options>
     <log>
         <mapfilename>/home/alexey/qt_pr/build-path-planning-Desktop-Debug/example4.xml</mapfilename>
-        <summary numberofsteps="42" nodescreated="143" length="16.071068" length_scaled="385.70562744140625" time="0.000291"/>
+        <summary numberofsteps="42" nodescreated="143" length="16.071068" length_scaled="385.70562744140625" time="0.000445"/>
         <path>
             <row number="0">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="1">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>

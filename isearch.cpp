@@ -53,7 +53,6 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
         }
         Node v = open.top();
         open.pop();
-        std::cout << v.i << ' ' << v.j << std::endl;
 
         if (v == goal_node) {
             sresult.pathfound = true;
