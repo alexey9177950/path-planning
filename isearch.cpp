@@ -58,6 +58,7 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
             sresult.pathfound = true;
             sresult.pathlength = v.g;
             makePrimaryPath(v);
+            makeSecondaryPath();
             break;
         }
         std::vector<Node> successors = findSuccessors(v, map, options);
@@ -118,7 +119,16 @@ void ISearch::makePrimaryPath(Node goal_node)
     }
 }
 
-/*void ISearch::makeSecondaryPath()
+
+void ISearch::makeSecondaryPath()
 {
-    //need to implement
-}*/
+    for (auto it = lppath.begin(); it != lppath.end(); ++it) {
+        auto it_next = it, it_prev = it;
+        ++it_next, --it_prev;
+        if (it == lppath.begin() || it_next == lppath.end()) {
+            hppath.push_back(*it);
+        } else if (2 * it->i != it_prev->i + it_next->i || 2 * it->j != it_prev->j + it_next->j) {
+            hppath.push_back(*it);
+        }
+    }
+}
