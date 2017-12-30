@@ -12,6 +12,8 @@
 //compatable with various types of grid pathfinders (Dijkstra, A*, Jump Point Search, Theta* etc.)
 //which means - that's all you need for that project.
 
+#include <set>
+
 struct Node
 {
     int     i, j; //grid cell coordinates
@@ -27,13 +29,15 @@ struct Node
     }
 };
 
+using NodeIter = std::set<Node>::iterator;
+
 // for priority_queue<Node>
-struct NodeComparator {
+struct NodeIterComp {
 private:
     bool breakingties;
 public:
-    NodeComparator(bool bt = 0) : breakingties(bt) {}
-    bool operator()(const Node& node_1, const Node& node_2) const;
+    NodeIterComp(bool bt = 0) : breakingties(bt) {}
+    bool operator()(NodeIter node_1, NodeIter node_2) const;
 };
 
 #endif

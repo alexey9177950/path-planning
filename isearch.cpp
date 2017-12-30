@@ -2,7 +2,7 @@
 
 ISearch::ISearch()
 {
-    open = std::priority_queue<Node, std::vector<Node>, NodeComparator>(NodeComparator(breakingties));
+    open_queue = std::set<NodeIter, NodeIterComp>(NodeIterComp(breakingties));
     sresult.pathfound = false;
     sresult.hppath = new std::list<Node>();
     sresult.lppath = new std::list<Node>();
@@ -43,28 +43,41 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
     begin_node = create_node(map.getStartI(), map.getStartJ(), 0, nullptr);
     goal_node = create_node(map.getGoalI(), map.getGoalJ(), 0, nullptr);
 
-    open.push(begin_node);
+    auto begin_iter = open.insert(begin_node).first;
+    open_queue.insert(begin_iter);
     while (!open.empty()) {
-        while (!open.empty() && close.find(open.top()) != close.end()) {
-            open.pop();
+        while (!open.empty() && close.find(**open_queue.begin()) != close.end()) {
+            open.erase(*open_queue.begin());
+            open_queue.erase(open_queue.begin());
         }
         if (open.empty()) {
             break;
         }
-        Node v = open.top();
-        open.pop();
+        Node cur_node = **open_queue.begin();
+        open.erase(*open_queue.begin());
+        open_queue.erase(open_queue.begin());
+        close.insert(cur_node);
 
-        if (v == goal_node) {
+        if (cur_node == goal_node) {
             sresult.pathfound = true;
-            sresult.pathlength = v.g;
-            makePrimaryPath(v);
+            sresult.pathlength = cur_node.g;
+            makePrimaryPath(cur_node);
             makeSecondaryPath();
             break;
         }
-        std::vector<Node> successors = findSuccessors(v, map, options);
-        for (const Node& u : successors) {
-            if (close.find(u) == close.end()) {
-                open.push(u);
+        std::vector<Node> successors = findSuccessors(cur_node, map, options);
+        for (const Node& succ_node : successors) {
+            if (close.find(succ_node) == close.end()) {
+                auto node_iter = open.find(succ_node);
+                if (node_iter == open.end()) {
+                    auto ans = open.insert(succ_node);
+                    open_queue.insert(ans.first);
+                } else if (node_iter->F > succ_node.F) {
+                    open_queue.erase(node_iter);
+                    open.erase(*node_iter);
+                    auto ans = open.insert(cur_node);
+                    open_queue.insert(ans.first);
+                }
             }
         }
     }
