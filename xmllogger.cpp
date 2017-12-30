@@ -6,6 +6,13 @@ using tinyxml2::XMLNode;
 
 bool XmlLogger::getLog(const char *FileName, const std::string *LogParams)
 {
+#ifdef _WIN32
+    char sep_char = '\\';\
+    std::string sep_str = "\\";
+#else
+    char sep_char = '/';
+    std::string sep_str = "/";
+#endif
     if (loglevel == CN_LP_LEVEL_NOPE_WORD) return true;
 
     if (doc.LoadFile(FileName) != tinyxml2::XMLError::XML_SUCCESS) {
@@ -25,17 +32,17 @@ bool XmlLogger::getLog(const char *FileName, const std::string *LogParams)
     } else if (LogParams[CN_LP_PATH] == "") {
         LogFileName.append(FileName);
         std::string::iterator it = LogFileName.end();
-        while (*it != '\\')
+        while (*it != sep_char)
             it--;
         ++it;
         LogFileName.erase(it, LogFileName.end());
         LogFileName.append(LogParams[CN_LP_NAME]);
     } else if (LogParams[CN_LP_NAME] == "") {
         LogFileName.append(LogParams[CN_LP_PATH]);
-        if (*(--LogParams[CN_LP_PATH].end()) != '\\') LogFileName.append("\\");
+        if (*(--LogParams[CN_LP_PATH].end()) != sep_char) LogFileName.append(sep_str);
         std::string lfn;
         lfn.append(FileName);
-        size_t found = lfn.find_last_of("\\");
+        size_t found = lfn.find_last_of(sep_char);
         std::string str = lfn.substr(found);
         found = str.find_last_of(".");
         if (found != std::string::npos)
@@ -45,7 +52,7 @@ bool XmlLogger::getLog(const char *FileName, const std::string *LogParams)
         LogFileName.append(str);
     } else {
         LogFileName.append(LogParams[CN_LP_PATH]);
-        if (*(--LogParams[CN_LP_PATH].end()) != '\\') LogFileName.append("\\");
+        if (*(--LogParams[CN_LP_PATH].end()) != sep_char) LogFileName.append(sep_str);
         LogFileName.append(LogParams[CN_LP_NAME]);
     }
 
