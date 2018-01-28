@@ -9,11 +9,10 @@ class Theta: public Astar
         ~Theta(void);
 
     private:
+        std::vector<Node> findSuccessors(Node curNode, const Map &map, const EnvironmentOptions &options) override;
         bool lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cutcorners);
-        Node resetParent(Node current, Node parent, const Map &map, const EnvironmentOptions &options);
-        void makePrimaryPath(Node curNode);
-        void makeSecondaryPath();
-
+        void makePrimaryPath(Node) override;
+        void makeSecondaryPath() override;
 };
 
 

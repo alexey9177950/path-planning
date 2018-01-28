@@ -43,9 +43,9 @@ class ISearch
 
 
 
-        std::vector<Node> findSuccessors(Node curNode, const Map &map, const EnvironmentOptions &options);
-        void makePrimaryPath(Node curNode);//Makes path using back pointers
-        void makeSecondaryPath();//Makes another type of path(sections or points)
+        virtual std::vector<Node> findSuccessors(Node curNode, const Map &map, const EnvironmentOptions &options);
+        virtual void makePrimaryPath(Node curNode);//Makes path using back pointers
+        virtual void makeSecondaryPath();//Makes another type of path(sections or points)
         Node create_node(int i, int j, double g, const Node* parent);
         double calc_dist(const Node& node_1,const Node& node_2);
         SearchResult sresult;

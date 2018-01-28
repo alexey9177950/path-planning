@@ -4,9 +4,9 @@ JP_Search::~JP_Search()
 {
 }
 
-std::list<Node> JP_Search::findSuccessors(Node curNode, const Map &map, const EnvironmentOptions &options)
+std::vector<Node> JP_Search::findSuccessors(Node curNode, const Map &map, const EnvironmentOptions &options)
 {
-    std::list<Node> successors;
+    std::vector<Node> successors;
     //need to implement
     return successors;
 }

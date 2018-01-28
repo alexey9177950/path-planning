@@ -15,9 +15,9 @@ double ISearch::calc_dist(const Node &n_1, const Node &n_2) {
     double dy = abs(n_1.i - n_2.i);
     if (metrictype == CN_SP_MT_DIAG) {
         return std::max(dx, dy) + (CN_SQRT_TWO - 1.) * std::min(dx, dy);
-    } else if (CN_SP_MT_MANH) {
+    } else if (metrictype == CN_SP_MT_MANH) {
         return dx + dy;
-    } else if (CN_SP_MT_EUCL) {
+    } else if (metrictype == CN_SP_MT_EUCL) {
         return sqrt(dx * dx + dy * dy);
     } else {
         // CN_SP_MT_CHEB
@@ -40,6 +40,7 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
 {
     using namespace  std::chrono;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    metrictype = options.metrictype;
     begin_node = create_node(map.getStartI(), map.getStartJ(), 0, nullptr);
     goal_node = create_node(map.getGoalI(), map.getGoalJ(), 0, nullptr);
 
@@ -92,6 +93,7 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
 
 std::vector<Node> ISearch::findSuccessors(Node v, const Map &map, const EnvironmentOptions &options)
 {
+    std::cout << "find succ in isearch" << std::endl;
     const Node *v_ptr = &(*close.insert(v).first);
     std::vector<Node> successors;
     int dir_num;
