@@ -4,7 +4,6 @@ Theta::~Theta()
 }
 
 std::vector<Node> Theta::findSuccessors(Node v, const Map &map, const EnvironmentOptions &options) {
-    std::cout << "f succ in thetta" << std::endl;
     const Node *v_ptr = &(*close.insert(v).first);
     const Node *vp_ptr = v_ptr->parent;
     std::vector<Node> successors;

@@ -1,5 +1,5 @@
-#include <node.h>
-#include <gl_const.h>
+#include "node.h"
+#include "gl_const.h"
 
 bool NodeIterComp::operator()(NodeIter node_1, NodeIter node_2) const {
     if (node_1->F == node_2->F) {

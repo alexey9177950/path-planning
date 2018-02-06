@@ -93,7 +93,6 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
 
 std::vector<Node> ISearch::findSuccessors(Node v, const Map &map, const EnvironmentOptions &options)
 {
-    std::cout << "find succ in isearch" << std::endl;
     const Node *v_ptr = &(*close.insert(v).first);
     std::vector<Node> successors;
     int dir_num;

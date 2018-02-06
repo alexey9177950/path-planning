@@ -1,1 +1,7 @@
 *.user
+ASearch
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+
