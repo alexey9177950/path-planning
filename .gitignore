@@ -1,5 +1,5 @@
 *.user
-ASearch
+CM_PathPlanning
 CMakeCache.txt
 CMakeFiles
 Makefile

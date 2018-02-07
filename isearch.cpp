@@ -47,13 +47,6 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
     auto begin_iter = open.insert(begin_node).first;
     open_queue.insert(begin_iter);
     while (!open.empty()) {
-        while (!open.empty() && close.find(**open_queue.begin()) != close.end()) {
-            open.erase(*open_queue.begin());
-            open_queue.erase(open_queue.begin());
-        }
-        if (open.empty()) {
-            break;
-        }
         Node cur_node = **open_queue.begin();
         open.erase(*open_queue.begin());
         open_queue.erase(open_queue.begin());
@@ -74,8 +67,8 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
                     auto ans = open.insert(succ_node);
                     open_queue.insert(ans.first);
                 } else if (node_iter->F > succ_node.F) {
-                    open_queue.erase(node_iter);
                     open.erase(*node_iter);
+                    open_queue.erase(node_iter);
                     auto ans = open.insert(cur_node);
                     open_queue.insert(ans.first);
                 }
@@ -115,7 +108,7 @@ std::vector<Node> ISearch::findSuccessors(Node v, const Map &map, const Environm
         } else {
             new_g = v.g + CN_SQRT_TWO;
             int obst_n = map.CellIsObstacle(v.i, j_new) + map.CellIsObstacle(i_new, v.j);
-            if ((obst_n == 2 && !options.allowsqueeze) ||  (obst_n >= 1 && !options.cutcorners)) {
+            if ((obst_n == 2 && !options.allowsqueeze) || (obst_n >= 1 && !options.cutcorners)) {
                 continue;
             }
         }

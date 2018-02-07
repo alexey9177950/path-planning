@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(ASearch)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -Wall -Wextra ")
 set(SOURCE_FILES
         main.cpp
         tinyxml2.cpp
@@ -35,4 +35,4 @@ set(HEADER_FILES
        theta.h
        environmentoptions.h
        )
-add_executable(PathPlanning ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(CM_PathPlanning ${HEADER_FILES} ${SOURCE_FILES})
