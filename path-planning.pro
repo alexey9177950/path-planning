@@ -8,7 +8,7 @@ TARGET = PathPlanning
 CONFIG   += console
 CONFIG   -= app_bundle
 TEMPLATE = app
-QMAKE_CXXFLAGS += -std=c++11 -O2 -Wall -Wextra
+QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra -g -O2
 
 win32 {
 QMAKE_LFLAGS += -static -static-libgcc -static-libstdc++

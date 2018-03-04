@@ -10,6 +10,12 @@ ISearch::ISearch()
 
 ISearch::~ISearch(void) {}
 
+double ISearch::calc_eucl_dist(const Node &n_1, const Node &n_2) {
+    double dx = abs(n_1.j - n_2.j);
+    double dy = abs(n_1.i - n_2.i);
+    return sqrt(dx * dx + dy * dy);
+}
+
 double ISearch::calc_dist(const Node &n_1, const Node &n_2) {
     double dx = abs(n_1.j - n_2.j);
     double dy = abs(n_1.i - n_2.i);
@@ -23,6 +29,10 @@ double ISearch::calc_dist(const Node &n_1, const Node &n_2) {
         // CN_SP_MT_CHEB
         return std::max(dx, dy);
     }
+}
+
+void ISearch::resetParent(Node &u, const Node *v_pr, const Map &map) {
+    // do nothing
 }
 
 Node ISearch::create_node(int i, int j, double g, const Node *parent) {
@@ -112,7 +122,9 @@ std::vector<Node> ISearch::findSuccessors(Node v, const Map &map, const Environm
                 continue;
             }
         }
-        successors.push_back(create_node(i_new, j_new, new_g, v_ptr));
+        Node u = create_node(i_new, j_new, new_g, v_ptr);
+        resetParent(u, v_ptr, map);
+        successors.push_back(u);
     }
     return successors;
 }

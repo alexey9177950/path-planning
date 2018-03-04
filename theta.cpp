@@ -3,56 +3,32 @@ Theta::~Theta()
 {
 }
 
-std::vector<Node> Theta::findSuccessors(Node v, const Map &map, const EnvironmentOptions &options) {
-    const Node *v_ptr = &(*close.insert(v).first);
-    const Node *vp_ptr = v_ptr->parent;
-    std::vector<Node> successors;
-    int dir_num;
-    int di[] = {0,  1,  0, -1,  1,  1, -1, -1};
-    int dj[] = {1,  0, -1,  0, -1,  1,  1, -1};
-    if (options.allowdiagonal) {
-        dir_num = 8;
-    } else {
-        dir_num = 4;
-    }
-    for (int dir = 0; dir < dir_num; ++dir) {
-        int i_new = v.i + di[dir];
-        int j_new = v.j + dj[dir];
-        if (map.getValue(i_new, j_new) != CN_GC_NOOBS) {
-            continue;
-        }
-        if (dir >= 4) {
-            int obst_n = map.CellIsObstacle(v.i, j_new) + map.CellIsObstacle(i_new, v.j);
-            if (((obst_n == 2 && !options.allowsqueeze) ||  (obst_n >= 1 && !options.cutcorners))) {
-                continue;
-            }
-        }
-        Node u = create_node(i_new, j_new, 0, nullptr);
-        if (vp_ptr && this->lineOfSight(vp_ptr->i, vp_ptr->j, u.i, u.j, map, options.cutcorners)) {
-            u.g = vp_ptr->g + this->calc_dist(*vp_ptr, u);
-            u.parent = vp_ptr;
-        } else {
-            u.g = v_ptr->g + this->calc_dist(*v_ptr, u);
-            u.parent = v_ptr;
-        }
-        successors.push_back(u);
-    }
-    return successors;
+int sign(double x) {
+    return round(x) / abs(round(x));
 }
 
+void Theta::resetParent(Node &u, const Node *v_pr, const Map &map) {
+    const Node *v_pr_pr = v_pr->parent;
+    if (v_pr_pr && this->lineOfSight(v_pr_pr->i, v_pr_pr->j, u.i, u.j, map, true)) {
+        u.g = v_pr_pr->g + this->calc_eucl_dist(*v_pr_pr, u);
+        u.parent = v_pr_pr;
+    }
+}
 
 bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cutcorners)
 {
-    double di= abs(i1 - i2), dj = abs(j1 - j2);
+    double di = i2 - i1, dj = j2 - j1;
     if (fabs(di) > fabs(dj)) {
-        for (int i = std::min(i1, i2); i < std::max(i1, i2); ++i) {
+        int delta_i = sign(di);
+        for (int i = i1; i != i2; i += delta_i) {
             int j = j1 + round(double(i - i1) * dj / di);
             if (map.getValue(i, j) != CN_GC_NOOBS) {
                 return false;
             }
         }
     } else {
-        for (int j = std::min(j1, j2); j < std::max(j1, j2); ++j) {
+        int delta_j = sign(dj);
+        for (int j = j1; j != j2; j += delta_j) {
             int i = i1 + round(double(j - j1) * di / dj);
             if (map.getValue(i, j) != CN_GC_NOOBS) {
                 return false;
@@ -64,7 +40,6 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cut
 
 void Theta::makePrimaryPath(Node goal_node)
 {
-    std::cout << "PRIMARY" << std::endl;
     const Node *curNode = &goal_node;
     while (curNode != nullptr) {
         hppath.emplace_front(*curNode);
@@ -72,10 +47,36 @@ void Theta::makePrimaryPath(Node goal_node)
     }
 }
 
-
 void Theta::makeSecondaryPath()
 {
-    std::cout << "SECONDARY" << std::endl;
-    lppath = hppath;
-    //need to implement
+    std::list<Node>::iterator cur, prev;
+    prev = hppath.begin();
+    cur = ++hppath.begin();
+    while (cur != hppath.end()) {
+        int i1 = prev->i, j1 = prev->j;
+        int i2 = cur->i, j2 = cur->j;
+        double di = i2 - i1, dj = j2 - j1;
+        if (fabs(di) > fabs(dj)) {
+            int delta_i = sign(di);
+            for (int i = i1; i != i2; i += delta_i) {
+                int j = j1 + round(double(i - i1) * dj / di);
+                Node new_node;
+                new_node.i = i;
+                new_node.j = j;
+                lppath.push_back(new_node);
+            }
+        } else {
+            int delta_j = sign(dj);
+            for (int j = j1; j != j2; j += delta_j) {
+                int i = i1 + round(double(j - j1) * di / dj);
+                Node new_node;
+                new_node.i = i;
+                new_node.j = j;
+                lppath.push_back(new_node);
+            }
+        }
+        lppath.push_back(*cur);
+        ++cur;
+        ++prev;
+    }
 }
