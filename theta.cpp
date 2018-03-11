@@ -18,6 +18,7 @@ void Theta::resetParent(Node &u, const Node *v_pr, const Map &map) {
 bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cutcorners)
 {
     double di = i2 - i1, dj = j2 - j1;
+    int pr_i = i1, pr_j = j1;
     if (fabs(di) > fabs(dj)) {
         int delta_i = sign(di);
         for (int i = i1; i != i2; i += delta_i) {
@@ -25,6 +26,10 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cut
             if (map.getValue(i, j) != CN_GC_NOOBS) {
                 return false;
             }
+            if (!cutcorners && (map.getValue(pr_i, j) != CN_GC_NOOBS || map.getValue(i, pr_j))) {
+                return false;
+            }
+            pr_i = i, pr_j = j;
         }
     } else {
         int delta_j = sign(dj);
@@ -33,6 +38,10 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cut
             if (map.getValue(i, j) != CN_GC_NOOBS) {
                 return false;
             }
+            if (!cutcorners && (map.getValue(pr_i, j) != CN_GC_NOOBS || map.getValue(i, pr_j))) {
+                return false;
+            }
+            pr_i = i, pr_j = j;
         }
     }
     return true;
