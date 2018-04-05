@@ -9,7 +9,7 @@ class Theta: public Astar
         ~Theta(void);
 
     private:
-        bool lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cutcorners);
+        bool lineOfSight(int i1, int j1, int i2, int j2, const Map &map);
         void makePrimaryPath(Node) override;
         void makeSecondaryPath() override;
         void resetParent(Node &u, const Node *v_pr, const Map &map) override;

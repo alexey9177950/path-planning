@@ -9,40 +9,57 @@ int sign(double x) {
 
 void Theta::resetParent(Node &u, const Node *v_pr, const Map &map) {
     const Node *v_pr_pr = v_pr->parent;
-    if (v_pr_pr && this->lineOfSight(v_pr_pr->i, v_pr_pr->j, u.i, u.j, map, true)) {
+    if (v_pr_pr && this->lineOfSight(v_pr_pr->i, v_pr_pr->j, u.i, u.j, map)) {
         u.g = v_pr_pr->g + this->calc_eucl_dist(*v_pr_pr, u);
         u.parent = v_pr_pr;
     }
 }
 
-bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cutcorners)
-{
-    // Modified Bresenham's algorithm
-    double di = i2 - i1, dj = j2 - j1;
-    int pr_i = i1, pr_j = j1;
-    if (fabs(di) > fabs(dj)) {
-        int delta_i = sign(di);
-        for (int i = i1; i != i2; i += delta_i) {
-            int j = j1 + round(double(i - i1) * dj / di);
-            if (map.getValue(i, j) != CN_GC_NOOBS) {
-                return false;
-            }
-            if (!cutcorners && (map.getValue(pr_i, j) != CN_GC_NOOBS || map.getValue(i, pr_j))) {
-                return false;
-            }
-            pr_i = i, pr_j = j;
-        }
+int is_obst(int i, int j, const Map &map, bool rev) {
+    if (rev) {
+        return map.getValue(j, i) != CN_GC_NOOBS;
     } else {
-        int delta_j = sign(dj);
-        for (int j = j1; j != j2; j += delta_j) {
-            int i = i1 + round(double(j - j1) * di / dj);
-            if (map.getValue(i, j) != CN_GC_NOOBS) {
+        return map.getValue(i, j) != CN_GC_NOOBS;
+    }
+}
+
+bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map)
+{
+    // Modified Bresenham's line algorithm
+    bool rev = false;
+    int di = i2 - i1, dj = j2 - j1;
+    if (abs(di) < abs(dj)) {
+        std::swap(di, dj);
+        std::swap(i1, j1);
+        std::swap(i2, j2);
+        rev = true;
+    }
+    if (j2 < j1) {
+        std::swap(i1, i2);
+        std::swap(j1, j2);
+        di *= -1;
+        dj *= -1;
+    }
+    // Now di >= dj and j1 <= j2
+    int delta_i;
+    if (di < 0) {
+        delta_i = -1;
+    } else {
+        delta_i = 1;
+    }
+    int j = j1;
+    int j_err = dj; // (j - round(j)) * 2 * di
+    for (int i = i1 + delta_i; i != i2; i += delta_i) {
+        if (is_obst(i, j, map, rev)) {
+            return false;
+        }
+        j_err += 2 * dj;
+        if (j_err > di) {
+            j_err -= 2 * di;
+            ++j;
+            if (is_obst(i, j, map, rev)) {
                 return false;
             }
-            if (!cutcorners && (map.getValue(pr_i, j) != CN_GC_NOOBS || map.getValue(i, pr_j))) {
-                return false;
-            }
-            pr_i = i, pr_j = j;
         }
     }
     return true;
