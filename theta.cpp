@@ -17,6 +17,7 @@ void Theta::resetParent(Node &u, const Node *v_pr, const Map &map) {
 
 bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cutcorners)
 {
+    // Modified Bresenham's algorithm
     double di = i2 - i1, dj = j2 - j1;
     int pr_i = i1, pr_j = j1;
     if (fabs(di) > fabs(dj)) {
@@ -49,6 +50,7 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map, bool cut
 
 void Theta::makePrimaryPath(Node goal_node)
 {
+    // Using parent links to build primary path
     const Node *curNode = &goal_node;
     while (curNode != nullptr) {
         hppath.emplace_front(*curNode);
@@ -62,6 +64,7 @@ void Theta::makeSecondaryPath()
     prev = hppath.begin();
     cur = ++hppath.begin();
     while (cur != hppath.end()) {
+        // Add nodes on a segment between prev and cur
         int i1 = prev->i, j1 = prev->j;
         int i2 = cur->i, j2 = cur->j;
         double di = i2 - i1, dj = j2 - j1;
