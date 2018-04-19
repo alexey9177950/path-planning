@@ -2,7 +2,7 @@
 #define	XMLLOGGER_H
 #include "tinyxml2.h"
 #include "ilogger.h"
-
+#include <set>
 
 //That's the class that flushes the data to the output XML
 
@@ -20,7 +20,7 @@ public:
 
     void writeToLogMap(const Map &Map, const std::list<Node> &path);
 
-    //void writeToLogOpenClose(const typename &open, const typename &close);
+    void writeToLogOpenClose(const std::set<Node> &open, const std::set<Node> &close, bool last);
 
     void writeToLogPath(const std::list<Node> &path);
 
@@ -33,6 +33,9 @@ public:
 private:
     std::string LogFileName;
     tinyxml2::XMLDocument doc;
+    int stepnum = 0;
+    // make XML element for set s with tag s_name:
+    tinyxml2::XMLElement *set_element(const char *s_name, const std::set<Node> &s);
 };
 
 #endif

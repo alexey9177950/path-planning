@@ -48,7 +48,7 @@ Node ISearch::create_node(int i, int j, double g, const Node *parent) {
     return ans;
 }
 
-SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const EnvironmentOptions &options)
+SearchResult ISearch::startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options)
 {
     using namespace  std::chrono;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -58,6 +58,7 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
 
     auto begin_iter = open.insert(begin_node).first;
     open_queue.insert(begin_iter);
+    logger->writeToLogOpenClose(close, open, false);
     while (!open.empty()) {
         // Move node from open to close
         Node cur_node = **open_queue.begin();
@@ -67,6 +68,7 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
 
         if (cur_node == goal_node) {
             // Path is found
+            logger->writeToLogOpenClose(open, close, true);
             sresult.pathfound = true;
             sresult.pathlength = cur_node.g;
             makePrimaryPath(cur_node);
@@ -91,6 +93,7 @@ SearchResult ISearch::startSearch(ILogger *Logger, const Map &map, const Environ
                 }
             }
         }
+        logger->writeToLogOpenClose(open, close, false);
     }
     sresult.nodescreated =  open.size() + close.size();
     sresult.numberofsteps = close.size();
