@@ -138,7 +138,8 @@ void XmlLogger::writeToLogMap(const Map &map, const std::list<Node> &path)
         return;
 
 
-}*/
+}
+*/
 
 void XmlLogger::writeToLogPath(const std::list<Node> &path)
 {

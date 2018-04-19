@@ -263,7 +263,7 @@ bool Map::getMap(const char *FileName)
                 int val;
                 if (elems.size() > 0)
                     for (grid_j = 0; grid_j < width; ++grid_j) {
-                        if (grid_j == elems.size())
+                        if (grid_j == static_cast<int>(elems.size()))
                             break;
                         stream.str("");
                         stream.clear();
@@ -310,13 +310,10 @@ bool Map::getMap(const char *FileName)
 
 int Map::getValue(int i, int j) const
 {
-    if (i < 0 || i >= height)
-        return -1;
-
-    if (j < 0 || j >= width)
-        return -1;
-
-    return Grid[i][j];
+    if (CellOnGrid(i, j)) {
+        return Grid[i][j];
+    }
+    return -1;
 }
 
 int Map::getMapHeight() const
