@@ -22,19 +22,39 @@ Map::~Map()
     }
 }
 
+bool Map::CellOnGrid(int i, int j) const
+{
+    return (i < height && i >= 0 && j < width && j >= 0);
+}
+
 bool Map::CellIsTraversable(int i, int j) const
 {
-    return (Grid[i][j] == CN_GC_NOOBS);
+    return CellOnGrid(i, j) && (Grid[i][j] == CN_GC_NOOBS);
 }
 
 bool Map::CellIsObstacle(int i, int j) const
 {
-    return (Grid[i][j] != CN_GC_NOOBS);
+    return (!CellOnGrid(i, j)) || (Grid[i][j] != CN_GC_NOOBS);
 }
 
-bool Map::CellOnGrid(int i, int j) const
+
+int Map::getValue(int i, int j) const
 {
-    return (i < height && i >= 0 && j < width && j >= 0);
+    if (CellOnGrid(i, j)) {
+        return Grid[i][j];
+    }
+    return -1;
+}
+
+// fast versions without checking if cell is on grid
+bool Map::FCellIsTraversable(int i, int j) const
+{
+    return (Grid[i][j] == CN_GC_NOOBS);
+}
+
+bool Map::FCellIsObstacle(int i, int j) const
+{
+    return (Grid[i][j] != CN_GC_NOOBS);
 }
 
 bool Map::getMap(const char *FileName)
@@ -304,16 +324,6 @@ bool Map::getMap(const char *FileName)
     }
 
     return true;
-}
-
-
-
-int Map::getValue(int i, int j) const
-{
-    if (CellOnGrid(i, j)) {
-        return Grid[i][j];
-    }
-    return -1;
 }
 
 int Map::getMapHeight() const

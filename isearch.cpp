@@ -58,8 +58,8 @@ SearchResult ISearch::startSearch(ILogger *logger, const Map &map, const Environ
 
     auto begin_iter = open.insert(begin_node).first;
     open_queue.insert(begin_iter);
-    logger->writeToLogOpenClose(close, open, false);
     while (!open.empty()) {
+        logger->writeToLogOpenClose(open, close, false);
         // Move node from open to close
         Node cur_node = **open_queue.begin();
         open.erase(*open_queue.begin());
@@ -68,7 +68,6 @@ SearchResult ISearch::startSearch(ILogger *logger, const Map &map, const Environ
 
         if (cur_node == goal_node) {
             // Path is found
-            logger->writeToLogOpenClose(open, close, true);
             sresult.pathfound = true;
             sresult.pathlength = cur_node.g;
             makePrimaryPath(cur_node);
@@ -93,8 +92,8 @@ SearchResult ISearch::startSearch(ILogger *logger, const Map &map, const Environ
                 }
             }
         }
-        logger->writeToLogOpenClose(open, close, false);
     }
+    logger->writeToLogOpenClose(open, close, true);
     sresult.nodescreated =  open.size() + close.size();
     sresult.numberofsteps = close.size();
     sresult.hppath = &hppath; //Here is a constant pointer

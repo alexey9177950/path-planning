@@ -17,9 +17,9 @@ void Theta::resetParent(Node &u, const Node *v_pr, const Map &map) {
 
 bool is_obst(int i, int j, const Map &map, bool rev) {
     if (rev) {
-        return map.getValue(j, i) != CN_GC_NOOBS;
+        return map.FCellIsObstacle(j, i);
     } else {
-        return map.getValue(i, j) != CN_GC_NOOBS;
+        return map.FCellIsObstacle(i, j);
     }
 }
 

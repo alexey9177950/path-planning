@@ -152,7 +152,6 @@ XMLElement *XmlLogger::set_element(const char *s_name, const std::set<Node> &s) 
 
 void XmlLogger::writeToLogOpenClose(const std::set<Node> &open, const std::set<Node> &close, bool last)
 {
-    //need to implement
     if (loglevel != CN_LP_LEVEL_FULL_WORD  && !(loglevel == CN_LP_LEVEL_MEDIUM_WORD && last))
         return;
 
