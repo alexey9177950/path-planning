@@ -31,13 +31,14 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map)
     if (di < dj) {
         std::swap(i1, j1);
         std::swap(i2, j2);
-        di *= -1;
-        dj *= -1;
+        std::swap(dj, di);
         rev = true;
     }
     if (j1 > j2) {
         std::swap(i1, i2);
         std::swap(j1, j2);
+        di *= -1;
+        dj *= -1;
     }
     int delta_i;
     if (di < 0) {
