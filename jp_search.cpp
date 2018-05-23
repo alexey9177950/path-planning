@@ -40,25 +40,31 @@ std::vector<Node> JP_Search::findNeighbours(const Node &v, const Map& map, const
             ans.push_back(Node(v.i + di, v.j + dj));
         }
     } else if (di != 0) { // vertical move
-        // natural neighbour:
-        if (map.CellIsTraversable(v.i + di, v.j)) {
+        // natural neighbour
+        bool flag = map.CellIsTraversable(v.i + di, v.j);
+        if (flag) {
             ans.push_back(Node(v.i + di, v.j));
         }
         // forsed neighbours:
-        for (int dj = -1; dj <= 1; dj += 2) {
-            if (map.CellIsObstacle(v.i, v.j + dj) && map.CellIsTraversable(v.i + di, v.j + dj)) {
-                ans.push_back(Node(v.i + di, v.j + dj));
+        if (flag || options.allowsqueeze) {
+            for (int dj = -1; dj <= 1; dj += 2) {
+                if (map.CellIsObstacle(v.i, v.j + dj) && map.CellIsTraversable(v.i + di, v.j + dj)) {
+                    ans.push_back(Node(v.i + di, v.j + dj));
+                }
             }
         }
     } else { // horizontal move
         // natural neighbour:
-        if (map.CellIsTraversable(v.i, v.j + dj)) {
+        bool flag = map.CellIsTraversable(v.i, v.j + dj);
+        if (flag) {
             ans.push_back(Node(v.i, v.j + dj));
         }
         // forsed neighbours:
-        for (int di = -1; di <= 1; di += 2) {
-            if (map.CellIsObstacle(v.i + di, v.j) && map.CellIsTraversable(v.i + di, v.j + dj)) {
-                ans.push_back(Node(v.i + di, v.j + dj));
+        if (flag || options.allowsqueeze) {
+            for (int di = -1; di <= 1; di += 2) {
+                if (map.CellIsObstacle(v.i + di, v.j) && map.CellIsTraversable(v.i + di, v.j + dj)) {
+                    ans.push_back(Node(v.i + di, v.j + dj));
+                }
             }
         }
     }
@@ -78,30 +84,43 @@ Node JP_Search::jump(Node v, Node v_pr, const Map &map, const EnvironmentOptions
     if (di != 0 && dj != 0) {
         // diagonal case
         // check forsed neighbours
-        if (map.CellIsObstacle(v.i - di, v.j) && map.CellIsTraversable(v.i - di, v.j + dj)) {
+        bool flag_i = opt.allowsqueeze || map.CellIsTraversable(v.i, v.j + dj);
+        if (flag_i && map.CellIsObstacle(v.i - di, v.j) && map.CellIsTraversable(v.i - di, v.j + dj)) {
             return v;
         }
-        if (map.CellIsObstacle(v.i, v.j - dj) && map.CellIsTraversable(v.i + di, v.j - dj)) {
+        bool flag_j = opt.allowsqueeze || map.CellIsTraversable(v.i + di, v.j);
+        if (flag_j && map.CellIsObstacle(v.i, v.j - dj) && map.CellIsTraversable(v.i + di, v.j - dj)) {
             return v;
         }
         // check vertical and horizontal jump
         if (jump(Node(v.i, v.j + dj), v, map, opt).i != -1 || jump(Node(v.i + di, v.j), v, map, opt).i != -1) {
             return v;
         }
-        return jump(Node(v.i + di, v.j + dj), v, map, opt);
+        if (flag_i || flag_j) {
+            return jump(Node(v.i + di, v.j + dj), v, map, opt);
+        } else {
+            v.i = -1;
+            return v;
+        }
     } else if (di != 0) {
         // vertical case
-        for (int dj = -1; dj <= 1; dj += 2) {
-            if (map.CellIsObstacle(v.i, v.j + dj) && map.CellIsTraversable(v.i + di, v.j + dj)) {
-                return v;
+        bool flag = opt.allowsqueeze || map.CellIsTraversable(v.i + di, v.j);
+        if (flag) {
+            for (int dj = -1; dj <= 1; dj += 2) {
+                if (map.CellIsObstacle(v.i, v.j + dj) && map.CellIsTraversable(v.i + di, v.j + dj)) {
+                    return v;
+                }
             }
         }
         return jump(Node(v.i + di, v.j), v, map, opt);
     } else {
         // horizontal case
-        for (int di = -1; di <= 1; di += 2) {
-            if (map.CellIsObstacle(v.i + di, v.j) && map.CellIsTraversable(v.i + di, v.j + dj)) {
-                return v;
+        bool flag = opt.allowsqueeze || map.CellIsTraversable(v.i + di, v.j);
+        if (flag) {
+            for (int di = -1; di <= 1; di += 2) {
+                if (map.CellIsObstacle(v.i + di, v.j) && map.CellIsTraversable(v.i + di, v.j + dj)) {
+                    return v;
+                }
             }
         }
         return jump(Node(v.i, v.j + dj), v, map, opt);
