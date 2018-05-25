@@ -120,7 +120,7 @@ std::vector<Node> ISearch::findSuccessors(Node v, const Map &map, const Environm
         // coordinates of successor:
         int i_new = v.i + di[dir];
         int j_new = v.j + dj[dir];
-        if (map.getValue(i_new, j_new) != CN_GC_NOOBS) {
+        if (map.CellIsObstacle(i_new, j_new)) {
             continue;
         }
         double new_g;

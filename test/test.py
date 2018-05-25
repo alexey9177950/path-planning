@@ -85,6 +85,8 @@ def run_tests(alg, opts, draw_pic = True):
 
 
 def compare(v_1, v_2):
+    assert(len(v_1) == len(v_2))
+    assert(len(v_1) == len(names))
     v_3 = [i / j for i, j in zip(v_1, v_2)]
     print(v_3)
     print("Mean:", sum(v_3) / len(v_3))
@@ -92,6 +94,7 @@ def compare(v_1, v_2):
 
 os.system("rm pics/*")
 os.system("rm logs/*")
+
 time_res = dict()
 length_res = dict()
 opt_num = {"dijkstra": 4, "astar" : 4, "jp_search" : 2, "theta" : 1}

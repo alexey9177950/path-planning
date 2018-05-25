@@ -523,12 +523,12 @@
     </map>
     <algorithm>
 		<metrictype>euclidean</metrictype>
-		<searchtype>dijkstra</searchtype>
+		<searchtype>theta</searchtype>
 		<hweight>1</hweight>
 		<breakingties>g-max</breakingties>
-		<allowdiagonal>false</allowdiagonal>
-		<allowsqueeze>false</allowsqueeze>
-		<cutcorners>false</cutcorners>
+		<allowdiagonal>true</allowdiagonal>
+		<allowsqueeze>true</allowsqueeze>
+		<cutcorners>true</cutcorners>
 	</algorithm>
     <options>
         <loglevel>1</loglevel>

@@ -9,8 +9,9 @@ int sign(double x) {
 
 void Theta::resetParent(Node &u, const Node *v_pr, const Map &map) {
     const Node *v_pr_pr = v_pr->parent;
-    if (v_pr_pr && lineOfSight(v_pr_pr->i, v_pr_pr->j, u.i, u.j, map)) {
+    if (v_pr_pr != nullptr && lineOfSight(v_pr_pr->i, v_pr_pr->j, u.i, u.j, map)) {
         u.g = v_pr_pr->g + this->calc_eucl_dist(*v_pr_pr, u);
+        u.F = u.g + u.H * hweight;
         u.parent = v_pr_pr;
     }
 }
@@ -28,17 +29,20 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map)
     // Modified Bresenham's line algorithm
     bool rev = false;
     int di = i2 - i1, dj = j2 - j1;
-    if (di < dj) {
+    if (di == 0 && dj == 0) {
+        return true;
+    }
+    if (abs(di) < abs(dj)) {
         std::swap(i1, j1);
         std::swap(i2, j2);
-        std::swap(dj, di);
+        std::swap(di, dj);
         rev = true;
     }
     if (j1 > j2) {
         std::swap(i1, i2);
         std::swap(j1, j2);
-        di *= -1;
         dj *= -1;
+        di *= -1;
     }
     int delta_i;
     if (di < 0) {
@@ -46,14 +50,15 @@ bool Theta::lineOfSight(int i1, int j1, int i2, int j2, const Map &map)
     } else {
         delta_i = 1;
     }
-    int j = j1, j_err = -dj;
+    di = abs(di);
+    int j = j1, j_err = -dj; // j_err = 2 * di * (j - round(j))
     for (int i = i1; i != i2; i += delta_i) {
         if (is_obst(i, j, map, rev)) {
             return false;
         }
         j_err += 2 * dj;
         if (j_err > di) {
-            j -= 2 * di;
+            j_err -= 2 * di;
             ++j;
             if (is_obst(i, j, map, rev)) {
                 return false;
